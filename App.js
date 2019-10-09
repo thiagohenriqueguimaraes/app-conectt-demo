@@ -1,12 +1,23 @@
 import React from 'react';
-import { StyleSheet, Platform, Image, Text, View, ScrollView } from 'react-native';
-
+import { StyleSheet, Platform, Text, View, ScrollView, Card } from 'react-native';
+import TraceView from './components/TraceView'
+import Fruta from './components/Fruta'
+import Greeting from './components/Greeting'
 import firebase from 'react-native-firebase';
 
 export default class App extends React.Component {
   constructor() {
     super();
     this.state = {};
+    console.log(firebase.iid())
+    firebase.messaging().getToken()
+    .then(fcmToken => {
+      if (fcmToken) {
+        console.log(`fcmToken: ${fcmToken}`)
+      } else {
+        // user doesn't have a device token yet
+      } 
+    });
   }
 
   async componentDidMount() {
@@ -20,7 +31,7 @@ export default class App extends React.Component {
   render() {
     return (
       <ScrollView>
-        <View style={styles.container}>
+        <View style={styles.container}>          
           <Text style={styles.welcome}>
             Bem-vindo {'\n'} React Native Firebase
           </Text>
@@ -52,7 +63,7 @@ export default class App extends React.Component {
             {firebase.links.nativeModuleExists && <Text style={styles.module}>links()</Text>}
             {firebase.messaging.nativeModuleExists && <Text style={styles.module}>messaging()</Text>}
             {firebase.notifications.nativeModuleExists && <Text style={styles.module}>notifications()</Text>}
-            {firebase.perf.nativeModuleExists && <Text style={styles.module}>perf()</Text>}
+            {firebase.perf.nativeModuleExists && <TraceView/> } 
             {firebase.storage.nativeModuleExists && <Text style={styles.module}>storage()</Text>}
           </View>
         </View>
