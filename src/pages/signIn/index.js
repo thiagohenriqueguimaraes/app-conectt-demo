@@ -5,6 +5,7 @@ import { StatusBar, AsyncStorage } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import api from '../../services/api';
+import fb from 'react-native-firebase';
 
 import {
   Container,
@@ -20,6 +21,13 @@ import {
 export default class SignIn extends Component {
   static navigationOptions = {
     header: null,
+  };
+
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func,
+      dispatch: PropTypes.func,
+    }).isRequired,
   };
 
   state = { email: '', password: '', error: '' };
@@ -41,12 +49,9 @@ export default class SignIn extends Component {
       this.setState({ error: 'Preencha usuário e senha para continuar!' }, () => false);
     } else {
       try {
-        const response = await api.post('/sessions', {
-          email: this.state.email,
-          password: this.state.password,
-        });
-          
-        await AsyncStorage.setItem('@AirBnbApp:token', response.data.token);
+        console.log(this.state.email);
+        const response = await fb.auth().signInWithEmailAndPassword(this.state.email, this.state.password);          
+        await AsyncStorage.setItem('@AirBnbApp:token', response.user.uid);
 
         const resetAction = StackActions.reset({
           index: 0,
@@ -56,6 +61,7 @@ export default class SignIn extends Component {
         });
         this.props.navigation.dispatch(resetAction);
       } catch (_err) {
+        console.log(_err)
         this.setState({ error: 'Houve um problema com o login, verifique suas credenciais!' });
       }
     }
@@ -65,7 +71,7 @@ export default class SignIn extends Component {
     return (
       <Container>
         <StatusBar hidden />
-        <Logo source={require('../../images/airbnb_logo.png')} resizeMode="contain" />
+        {/* <Logo source={require('../../images/airbnb_logo.png')} resizeMode="contain" /> */}
         <Input
           placeholder="Endereço de e-mail"
           value={this.state.email}
