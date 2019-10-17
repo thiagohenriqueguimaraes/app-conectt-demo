@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { StatusBar, AsyncStorage } from 'react-native';
+//import { AsyncStorage } from '@react-native-community/async-storage';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import api from '../../services/api';
