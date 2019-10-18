@@ -20,6 +20,9 @@ import {
 } from './styles';
 
 export default class SignIn extends Component {
+  constructor() {
+    super()
+  }
   static navigationOptions = {
     header: null,
   };
@@ -33,6 +36,14 @@ export default class SignIn extends Component {
 
   state = { email: '', password: '', error: '' };
 
+  async componentDidMount() {
+    const token = await AsyncStorage.getItem('@AirBnbApp:token');
+
+    if (token) {
+      this.props.navigation.navigate('Main');
+    }
+    
+  }
   handleEmailChange = (email) => {
     this.setState({ email });
   };
@@ -50,7 +61,6 @@ export default class SignIn extends Component {
       this.setState({ error: 'Preencha usuário e senha para continuar!' }, () => false);
     } else {
       try {
-        console.log(this.state.email);
         const response = await fb.auth().signInWithEmailAndPassword(this.state.email, this.state.password);          
         await AsyncStorage.setItem('@AirBnbApp:token', response.user.uid);
 
